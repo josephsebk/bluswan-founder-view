@@ -50,7 +50,7 @@
     <style type="text/tailwindcss">
         @layer base {
             body {
-                background-color: #050505;
+                background: radial-gradient(ellipse at 50% 0%, rgba(46,204,112,0.08) 0%, #0d1a11 40%, #050505 80%);
                 color: #FFF;
                 -webkit-font-smoothing: antialiased;
                 min-height: max(884px, 100dvh);
@@ -67,16 +67,16 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: #050505 }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #2C2C2E; border-radius: 2px }
         .glass-panel {
-            background: rgba(5, 5, 5, 0.8);
+            background: rgba(16,34,22,0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05)
+            border-bottom: 1px solid rgba(46,204,112,0.15)
         }
         .sticky-column {
             position: sticky;
             left: 0;
             z-index: 30;
-            background-color: #0D0D0D;
+            background: rgba(13,26,17,0.9);
         }
     </style>
 </head>
