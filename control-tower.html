@@ -167,10 +167,12 @@
                 const occupiedPct = total > 0 ? (occupied / total) * 100 : 0;
 
                 // Calculate Progress
+                // Calculate Progress
                 const progress = (() => {
-                    if (timeSlots.length === 0) return 0;
+                    const now = new Date();
+                    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
                     const parseTime = (t) => {
-                        // Handle "2:00 PM" format
                         const [time, modifier] = t.trim().split(/\s+/);
                         let [hours, minutes] = time.split(':');
                         if (hours === '12') hours = '00';
@@ -178,23 +180,33 @@
                         return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
                     };
 
-                    try {
-                        // timeSlots are like "2:00 PM – 2:30 PM"
-                        const startStr = timeSlots[0].split('–')[0];
-                        const lastSlot = timeSlots[timeSlots.length - 1];
-                        const endStr = lastSlot.split('–')[0];
+                    // Find current slot
+                    const currentSlot = timeSlots.find(slot => {
+                        try {
+                            const parts = slot.split('–'); // En dash or hyphen check?
+                            // Data usually has "2:00 PM – 2:30 PM" (en dash) or "-"
+                            // Let's try splitting by regex to be safe
+                            const timing = slot.split(/[–-]/);
+                            if (timing.length < 2) return false;
 
-                        const startMinutes = parseTime(startStr);
-                        const endMinutes = parseTime(endStr) + 30; // Assume 30 min duration for last slot
+                            const s = parseTime(timing[0]);
+                            const e = parseTime(timing[1]);
 
-                        const now = new Date();
-                        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+                            return currentMinutes >= s && currentMinutes < e;
+                        } catch (e) { return false; }
+                    });
 
-                        if (currentMinutes < startMinutes) return 0;
-                        if (currentMinutes > endMinutes) return 100;
+                    if (!currentSlot) return 0;
 
-                        return Math.round(((currentMinutes - startMinutes) / (endMinutes - startMinutes)) * 100);
-                    } catch (e) { return 0; }
+                    // Filter meetings in this slot
+                    const slotMeetings = meetings.filter(m => m.timeSlot === currentSlot);
+                    const totalInSlot = slotMeetings.length;
+
+                    if (totalInSlot === 0) return 0;
+
+                    const startedInSlot = slotMeetings.filter(m => m.status === 'started').length;
+
+                    return Math.round((startedInSlot / totalInSlot) * 100);
                 })();
 
                 return { total, occupied, free, active, freePct, occupiedPct, progress };

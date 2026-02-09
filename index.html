@@ -165,6 +165,17 @@
                                 <span className="animate-spin material-symbols-outlined">sync</span>
                                 Loading...
                             </div>
+                        ) : founders.length === 0 ? (
+                            <div className="text-center flex flex-col items-center">
+                                <div className="text-4xl mb-4">⚠️</div>
+                                <h3 className="text-lg font-bold">Unable to load data</h3>
+                                <p className="text-white/40 text-sm mb-6 max-w-[200px]">Check your internet connection or try again.</p>
+                                <button onClick={() => { setLoading(true); fetchMeetings().finally(() => setLoading(false)); }}
+                                    className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all font-medium">
+                                    <span className="material-symbols-outlined">refresh</span>
+                                    Retry
+                                </button>
+                            </div>
                         ) : (
                             <div className="w-full max-w-sm space-y-3">
                                 {founders.map(f => (
