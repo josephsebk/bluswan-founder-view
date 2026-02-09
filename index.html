@@ -1,213 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#050505">
-    <title>BluSwan — Founder View</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦢</text></svg>">
+    <title>Founder Personalized Schedule</title>
+
+    <!-- Dependencies -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+    <script src="assets/investor_images.js"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2ECC71",
+                        "alert": "#F39C12",
+                        "background-dark": "#050505",
+                        "surface-dark": "#121212",
+                        "surface-lighter": "#1A1A1A",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica", "Arial", "sans-serif"],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(46, 204, 113, 0.25)',
+                        'glow-alert': '0 0 20px rgba(243, 156, 18, 0.25)',
+                    }
+                },
+            },
+        }
+    </script>
     <style>
-        /* Reset & Base */
-        html,
-        body,
-        #root {
-            margin: 0;
-            padding: 0;
-            min-height: 100%;
-            width: 100%;
-            background: #050505;
-            font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: #fff;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            -webkit-font-smoothing: antialiased;
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
 
-        /* Utilities */
-        .btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #fff;
-            padding: 16px 20px;
-            border-radius: 16px;
-            font-size: 17px;
-            font-weight: 600;
-            width: 100%;
-            text-align: left;
-            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            cursor: pointer;
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        .btn:active {
-            transform: scale(0.98);
-            background: rgba(255, 255, 255, 0.1);
+        .mask-linear-fade {
+            -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+            mask-image: linear-gradient(to right, black 85%, transparent 100%);
         }
 
-        .card {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 22px;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
+        .safe-area-pb {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
         }
 
-        .card-live {
-            background: linear-gradient(145deg, rgba(46, 204, 112, 0.08) 0%, rgba(46, 204, 112, 0.02) 100%);
-            border-color: rgba(46, 204, 112, 0.2);
-            box-shadow: 0 8px 32px rgba(46, 204, 112, 0.15);
-        }
-
-        .floor-banner {
-            background: #f59e0b;
-            color: #000;
-            font-weight: 800;
-            text-transform: uppercase;
-            padding: 16px;
-            border-radius: 16px;
-            margin: 32px 0 20px;
-            text-align: center;
-            font-size: 15px;
-            letter-spacing: 0.05em;
-            animation: pulse 2s infinite;
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
-            border: 1px solid #fbbf24;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(0.98);
-                opacity: 0.9;
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #2ecc70;
-            border-radius: 50%;
-            box-shadow: 0 0 0 rgba(46, 204, 112, 0.4);
-            animation: pulse-green 2s infinite;
-            display: inline-block;
-        }
-
-        @keyframes pulse-green {
-            0% {
-                box-shadow: 0 0 0 0 rgba(46, 204, 112, 0.7);
-            }
-
-            70% {
-                box-shadow: 0 0 0 8px rgba(46, 204, 112, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(46, 204, 112, 0);
-            }
-        }
-
-        /* Typography */
-        h1,
-        h2,
-        h3 {
-            margin: 0;
-        }
-
-        .text-sm {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 500;
-        }
-
-        .text-xs {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.4);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
-        .investor-img {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
-            object-fit: cover;
-            background: #222;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .investor-placeholder {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .avatar-circle {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 700;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
-        /* Back Button */
-        .back-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.7);
-            padding: 8px 16px;
-            border-radius: 99px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .back-btn:active {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(0.96);
+        .material-symbols-outlined.fill-1 {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24
         }
     </style>
 </head>
 
-<body>
-    <div id="root"></div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"
-        crossorigin></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js" crossorigin></script>
-    <script src="assets/investor_images.js"></script>
+<body
+    class="bg-background-dark text-white h-screen w-full flex flex-col overflow-hidden font-display selection:bg-primary selection:text-black">
+    <div id="root" class="h-full w-full flex flex-col"></div>
 
     <script type="text/babel" data-type="module">
         const { useState, useEffect, useMemo, useCallback } = React;
@@ -219,42 +92,34 @@
         // Fallback if script fails
         if (typeof INVESTOR_IMAGES === 'undefined') { var INVESTOR_IMAGES = {}; }
 
-        // Room Data (for floor info)
+        // Rooms
         const ROOMS = [
-            { name: "GF-LAZE", floor: "Ground Floor" },
-            { name: "GF-Clout", floor: "Ground Floor" },
-            { name: "GF-Navigate", floor: "Ground Floor" },
-            { name: "GF-Library", floor: "Ground Floor" },
-            { name: "FF-Buzz", floor: "First Floor" },
-            { name: "FF-Ponder", floor: "First Floor" },
-            { name: "FF-Balance", floor: "First Floor" },
-            { name: "FF-Aspire", floor: "First Floor" },
-            { name: "FF-Curate", floor: "First Floor" },
-            { name: "FF-Introspect", floor: "First Floor" },
+            { name: "GF-LAZE", floor: "Ground Floor" }, { name: "GF-Clout", floor: "Ground Floor" },
+            { name: "GF-Navigate", floor: "Ground Floor" }, { name: "GF-Library", floor: "Ground Floor" },
+            { name: "FF-Buzz", floor: "First Floor" }, { name: "FF-Ponder", floor: "First Floor" },
+            { name: "FF-Balance", floor: "First Floor" }, { name: "FF-Aspire", floor: "First Floor" },
+            { name: "FF-Curate", floor: "First Floor" }, { name: "FF-Introspect", floor: "First Floor" },
             { name: "FF-Library", floor: "First Floor" },
         ];
 
         function getRoomFloor(roomName) {
             if (!roomName) return "Unknown";
             const r = ROOMS.find(r => r.name.toLowerCase() === roomName.toLowerCase());
-            // Heuristic fallback if not in list: GF- -> Ground, FF- -> First
             if (!r) {
                 if (roomName.startsWith("GF")) return "Ground Floor";
                 if (roomName.startsWith("FF")) return "First Floor";
-                return "Unknown Floor";
+                return "Unknown";
             }
             return r.floor;
         }
 
-        // Main App Component
         function App() {
-            const [view, setView] = useState("login"); // login | schedule
-            const [founder, setFounder] = useState(null); // Selected Company Name
+            const [view, setView] = useState("login");
+            const [founder, setFounder] = useState(null);
             const [meetings, setMeetings] = useState([]);
             const [loading, setLoading] = useState(false);
             const [lastSync, setLastSync] = useState(null);
 
-            // Fetch Data
             const fetchMeetings = useCallback(async () => {
                 try {
                     const res = await fetch(`${APPS_SCRIPT_URL}?action=getMeetings`);
@@ -266,7 +131,6 @@
                 } catch (e) { console.error("Fetch error", e); }
             }, []);
 
-            // Initial Load & Polling
             useEffect(() => {
                 setLoading(true);
                 fetchMeetings().finally(() => setLoading(false));
@@ -274,9 +138,7 @@
                 return () => clearInterval(interval);
             }, [fetchMeetings]);
 
-            // Get unique founders for Login List
             const founders = useMemo(() => {
-                // Collect all company names and founder names
                 const names = new Set();
                 meetings.forEach(m => {
                     if (m.company) names.add(m.company);
@@ -285,36 +147,34 @@
                 return Array.from(names).filter(Boolean).sort();
             }, [meetings]);
 
-            // Filter My Meetings
             const myMeetings = useMemo(() => {
                 if (!founder) return [];
-                return meetings
-                    .filter(m => (m.company === founder || m.founder === founder))
-                    .sort((a, b) => a.id - b.id);
+                return meetings.filter(m => (m.company === founder || m.founder === founder)).sort((a, b) => a.id - b.id);
             }, [meetings, founder]);
 
-            // View: Login
             if (view === "login") {
                 return (
-                    <div style={{ padding: 24, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-                        <div style={{ textAlign: "center", marginBottom: 40, marginTop: 40 }}>
-                            <div style={{ fontSize: 64, marginBottom: 16 }}>🦢</div>
-                            <h1 style={{ fontSize: 28, fontWeight: 800 }}>Welcome, Founder</h1>
-                            <p className="text-sm" style={{ marginTop: 8 }}>Select your company to view schedule</p>
+                    <div className="flex flex-col min-h-screen p-6 items-center justify-center">
+                        <div className="text-center mb-12">
+                            <div className="text-6xl mb-4">🦢</div>
+                            <h1 className="text-3xl font-bold tracking-tight">Welcome, Founder</h1>
+                            <p className="text-white/40 mt-2">Select your company to view schedule</p>
                         </div>
-
                         {loading && founders.length === 0 ? (
-                            <div style={{ textAlign: "center", color: "rgba(255,255,255,0.4)" }}>
-                                <div className="pulse-dot" style={{ width: 12, height: 12, marginBottom: 16 }}></div>
-                                <br />Loading schedule...
+                            <div className="flex items-center gap-2 text-primary/80">
+                                <span className="animate-spin material-symbols-outlined">sync</span>
+                                Loading...
                             </div>
                         ) : (
-                            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                            <div className="w-full max-w-sm space-y-3">
                                 {founders.map(f => (
-                                    <button key={f} className="btn" onClick={() => { setFounder(f); setView("schedule"); }}>
-                                        <div className="avatar-circle">{f[0]}</div>
-                                        <span style={{ fontSize: 17 }}>{f}</span>
-                                        <span style={{ marginLeft: "auto", opacity: 0.3 }}>→</span>
+                                    <button key={f} onClick={() => { setFounder(f); setView("schedule"); }}
+                                        className="w-full flex items-center gap-4 bg-surface-lighter hover:bg-white/10 border border-white/5 p-4 rounded-2xl transition-all active:scale-[0.98]">
+                                        <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center text-lg font-bold">
+                                            {f[0]}
+                                        </div>
+                                        <span className="text-lg font-semibold">{f}</span>
+                                        <span className="material-symbols-outlined ml-auto text-white/20">arrow_forward</span>
                                     </button>
                                 ))}
                             </div>
@@ -323,29 +183,48 @@
                 );
             }
 
-            // View: Schedule
             return (
-                <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+                <div className="flex flex-col h-full overflow-hidden">
                     {/* Header */}
-                    <div style={{ padding: "16px 20px", background: "rgba(10,10,10,0.85)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.08)", position: "sticky", top: 0, zIndex: 100 }}>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                            <button onClick={() => setView("login")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.6)", fontSize: 15, padding: "8px 0", cursor: "pointer", fontWeight: 500 }}>← Back</button>
-                            <div style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.06)", padding: "4px 10px", borderRadius: 20 }}>
-                                <div className="pulse-dot" style={{ width: 6, height: 6, opacity: lastSync ? 1 : 0.4 }}></div>
-                                <span className="text-xs" style={{ color: lastSync ? "#2ecc70" : "rgba(255,255,255,0.4)" }}>{lastSync ? "LIVE" : "SYNCING"}</span>
+                    <header className="flex-none pt-12 pb-4 px-5 bg-background-dark z-20 sticky top-0 border-b border-white/5">
+                        <div className="flex items-center justify-between mb-6">
+                            <button onClick={() => setView('login')} className="flex items-center gap-2 text-white/60 hover:text-white transition-colors cursor-pointer">
+                                <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+                                <span className="text-sm font-medium">Back</span>
+                            </button>
+                            <div className="bg-primary/20 border border-primary/30 px-3 py-1 rounded-full flex items-center gap-1.5">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                                </span>
+                                <span className="text-[10px] font-bold tracking-wider text-primary uppercase">{lastSync ? "LIVE" : "SYNCING"}</span>
                             </div>
                         </div>
-                        <h2 style={{ fontSize: 24, fontWeight: 800, marginTop: 12, letterSpacing: "-0.02em" }}>{founder}</h2>
-                    </div>
+                        <h1 className="text-3xl font-bold tracking-tight text-white">{founder}</h1>
+                        <p className="text-white/40 text-sm font-medium mt-1">BluSwan 2026 • Founder Schedule</p>
 
-                    {/* Schedule List */}
-                    <div style={{ padding: 20, flex: 1, paddingBottom: 60 }}>
+                        {/* Time Picker (Visual Only for now) */}
+                        <div className="mt-8 flex gap-3 overflow-x-auto no-scrollbar pb-2 mask-linear-fade">
+                            {["02:00", "02:30", "03:00", "03:30", "04:00", "04:30"].map((time, i) => (
+                                <button key={time} className={`flex flex-col items-center justify-center min-w-[70px] h-[70px] rounded-2xl shrink-0 transition-all ${i === 0 ? 'bg-primary text-black shadow-glow scale-105' : 'bg-surface-lighter border border-white/10 text-white/60'}`}>
+                                    <span className="text-sm font-bold">{time}</span>
+                                    {i === 0 && <span className="text-[10px] font-bold uppercase mt-0.5">Now</span>}
+                                </button>
+                            ))}
+                        </div>
+                    </header>
+
+                    {/* Main Content */}
+                    <main className="flex-1 overflow-y-auto px-5 py-2 pb-24 space-y-6">
+                        {myMeetings.length === 0 && (
+                            <div className="text-center py-20 text-white/30">
+                                <span className="material-symbols-outlined text-4xl mb-2">calendar_today</span>
+                                <p>No meetings found.</p>
+                            </div>
+                        )}
+
                         {myMeetings.map((m, i) => {
                             const currentFloor = getRoomFloor(m.room);
-
-                            // Determine previous floor to check for movement
-                            // If it's the first meeting, assume they are entering building (no move alert unless we want one)
-                            // But let's look at i-1 meeting
                             let showMove = false;
                             let prevFloor = null;
 
@@ -357,62 +236,105 @@
                                 }
                             }
 
-                            const isStarted = m.status === "started";
+                            const isStarted = m.status === 'started';
+                            const isFirst = i === 0;
+                            const sectionTitle = isStarted ? "Current Session" : (isFirst ? "Up Next" : "Upcoming");
+                            const cardClass = isStarted
+                                ? "block relative w-full rounded-[20px] bg-gradient-to-br from-[#151515] to-black border-2 border-primary shadow-glow overflow-hidden group"
+                                : (isFirst
+                                    ? "block relative w-full rounded-[20px] bg-surface-lighter border border-white/5 p-6 active:scale-[0.99] transition-transform"
+                                    : "block relative w-full rounded-[20px] bg-surface-dark border border-white/5 p-6 opacity-80");
+
                             const repImage = INVESTOR_IMAGES[m.rep];
 
                             return (
                                 <React.Fragment key={m.id}>
+                                    {/* Floor Change Banner */}
                                     {showMove && (
-                                        <div className="floor-banner">
-                                            CHANGE FLOORS
-                                            <div style={{ fontSize: 13, opacity: 0.8, marginTop: 4, fontWeight: 600, textTransform: "none" }}>
-                                                Go from <u>{prevFloor}</u> to <u>{currentFloor}</u>
+                                        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#F39C12]/20 to-[#F39C12]/5 border border-[#F39C12]/40 p-4 shadow-glow-alert flex items-center justify-between mb-4">
+                                            <div className="absolute top-0 left-0 w-1 h-full bg-[#F39C12]"></div>
+                                            <div className="flex items-center gap-4 z-10">
+                                                <div className="h-10 w-10 rounded-full bg-[#F39C12]/20 flex items-center justify-center text-[#F39C12]">
+                                                    <span className="material-symbols-outlined">elevator</span>
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-[#F39C12] font-bold text-sm tracking-wide uppercase">Change Floors</h4>
+                                                    <p className="text-[#F39C12]/80 text-xs">Go from <span className="text-white font-semibold">{prevFloor}</span> to <span class="text-white font-semibold">{currentFloor}</span></p>
+                                                </div>
                                             </div>
+                                            <span className="material-symbols-outlined text-[#F39C12]/60 -rotate-45">arrow_forward</span>
                                         </div>
                                     )}
 
-                                    <div className={isStarted ? "card card-live" : "card"}>
-                                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16, alignItems: "center" }}>
-                                            <span className="text-sm" style={{ color: isStarted ? "#2ecc70" : "rgba(255,255,255,0.5)", fontWeight: 700, letterSpacing: "0.02em" }}>
-                                                {m.timeSlot}
-                                            </span>
-                                            {isStarted && (
-                                                <span style={{ fontSize: 11, background: "rgba(46, 204, 112, 0.2)", color: "#2ecc70", fontWeight: 800, padding: "4px 8px", borderRadius: 6 }}>
-                                                    IN PROGRESS
-                                                </span>
-                                            )}
+                                    <section>
+                                        <div className="flex justify-between items-baseline mb-3 px-1">
+                                            <h2 className={`text-xs font-bold uppercase tracking-widest ${isStarted ? 'text-primary' : 'text-white/60'}`}>{sectionTitle}</h2>
+                                            <span className="text-xs text-white/40 font-mono">{m.timeSlot}</span>
                                         </div>
+                                        <div className={cardClass}>
+                                            {isStarted && <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/30 via-transparent to-transparent"></div>}
 
-                                        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
-                                            {repImage ? (
-                                                <img src={repImage} className="investor-img" />
-                                            ) : (
-                                                <div className="investor-placeholder"></div>
-                                            )}
-                                            <div>
-                                                <div style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.2, marginBottom: 4 }}>{m.investor}</div>
+                                            <div className={`relative ${isStarted ? 'p-6 z-10' : ''}`}>
+                                                <div className="flex justify-between items-start mb-6">
+                                                    <div className="flex flex-col">
+                                                        <span className={`text-xs font-semibold mb-1 uppercase tracking-wider flex items-center gap-1.5 ${isStarted ? 'text-primary/80' : 'text-white/40'}`}>
+                                                            <span className="material-symbols-outlined text-[16px]">meeting_room</span>
+                                                            {m.room}
+                                                        </span>
+                                                        <h3 className={`font-bold text-white leading-tight ${isStarted ? 'text-2xl' : 'text-xl'}`}>{m.investor}</h3>
+                                                    </div>
+                                                    {/* Conditional Floor Badge */}
+                                                    <div className={`h-10 w-10 rounded-full flex items-center justify-center border ${isStarted ? 'bg-white/5 border-white/10' : 'bg-white/5 border-white/5 text-white/30'}`}>
+                                                        {isStarted ? <span className="text-lg font-bold text-white">{m.investor[0]}</span> : <span className="material-symbols-outlined">apartment</span>}
+                                                    </div>
+                                                </div>
+
+                                                {isStarted && <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-4"></div>}
+
+                                                {isStarted ? (
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="h-12 w-12 rounded-xl bg-white/5 flex items-center justify-center overflow-hidden border border-white/10">
+                                                            {repImage ? <img src={repImage} className="h-full w-full object-cover opacity-80" /> : <span className="text-2xl">💼</span>}
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[10px] text-white/40 uppercase font-bold tracking-wider mb-0.5">Rep</p>
+                                                            <p className="text-white font-medium">{m.rep}</p>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center gap-3 pt-4 border-t border-white/5">
+                                                        <div className="h-8 w-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold">
+                                                            {currentFloor.startsWith('Ground') ? 'GF' : 'FF'}
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm text-white/80 font-medium">{currentFloor}</p>
+                                                            <p className="text-xs text-white/30">{currentFloor}</p>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
-
-                                        <div style={{ paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 10 }}>
-                                            <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: "50%", width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center" }}></div>
-                                            <div>
-                                                <div style={{ fontSize: 15, fontWeight: 700 }}>{m.room}</div>
-                                                <div className="text-sm" style={{ fontSize: 12 }}>{currentFloor}</div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </section>
                                 </React.Fragment>
                             );
                         })}
+                    </main>
 
-                        {myMeetings.length === 0 && !loading && (
-                            <div style={{ textAlign: "center", color: "rgba(255,255,255,0.3)", marginTop: 60 }}>
-                                <div style={{ fontSize: 40, marginBottom: 10 }}>📭</div>
-                                No meetings found for {founder}.
-                            </div>
-                        )}
-                    </div>
+                    {/* Bottom Nav */}
+                    <nav className="flex-none bg-background-dark/90 backdrop-blur-xl border-t border-white/10 px-6 py-4 flex justify-around items-center z-50 safe-area-pb">
+                        <button className="flex flex-col items-center gap-1 text-primary">
+                            <span className="material-symbols-outlined fill-1">calendar_today</span>
+                            <span className="text-[10px] font-medium">Schedule</span>
+                        </button>
+                        <button className="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
+                            <span className="material-symbols-outlined">map</span>
+                            <span className="text-[10px] font-medium">Map</span>
+                        </button>
+                        <button className="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
+                            <span className="material-symbols-outlined">notifications</span>
+                            <span className="text-[10px] font-medium">Alerts</span>
+                        </button>
+                    </nav>
                 </div>
             );
         }
