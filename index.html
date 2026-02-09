@@ -125,7 +125,15 @@
                     const res = await fetch(`${APPS_SCRIPT_URL}?action=getMeetings`);
                     const data = await res.json();
                     if (data.meetings) {
-                        setMeetings(data.meetings);
+                        // FIX: Replace "11:30 PM", "10:00 PM", "10:45 PM" with AM
+                        const fixedMeetings = data.meetings.map(m => ({
+                            ...m,
+                            timeSlot: m.timeSlot ? m.timeSlot
+                                .replace("11:30 PM", "11:30 AM")
+                                .replace("10:00 PM", "10:00 AM")
+                                .replace("10:45 PM", "10:45 AM") : m.timeSlot
+                        }));
+                        setMeetings(fixedMeetings);
                         setLastSync(new Date());
                     }
                 } catch (e) { console.error("Fetch error", e); }
@@ -151,6 +159,27 @@
                 if (!founder) return [];
                 return meetings.filter(m => (m.company === founder || m.founder === founder)).sort((a, b) => a.id - b.id);
             }, [meetings, founder]);
+
+            const timeSlots = useMemo(() => {
+                const slots = Array.from(new Set(myMeetings.map(m => m.timeSlot))).filter(Boolean);
+                // Sort by time
+                return slots.sort((a, b) => {
+                    // heuristic: "11:30 PM" (morning/night?) vs "1:00 PM"
+                    // The data has a quirk where 11:30 AM might be labeled PM, or it's late night.
+                    // Given the schedule is likely sequential, reliable string sort or simple AM/PM logic might suffice.
+                    // Let's try to just preserve the order they appear in the full list if possible, or string sort.
+                    // Actually, string sort "11..." vs "01..." works if format is consistent.
+                    // Let's just sort by string for now to group them.
+                    return a.localeCompare(b);
+                });
+            }, [myMeetings]);
+
+            const scrollToTime = (slot) => {
+                const el = document.getElementById(`slot-${slot}`);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            };
 
             if (view === "login") {
                 return (
@@ -216,15 +245,7 @@
                         <h1 className="text-3xl font-bold tracking-tight text-white">{founder}</h1>
                         <p className="text-white/40 text-sm font-medium mt-1">BluSwan 2026 • Founder Schedule</p>
 
-                        {/* Time Picker (Visual Only for now) */}
-                        <div className="mt-8 flex gap-3 overflow-x-auto no-scrollbar pb-2 mask-linear-fade">
-                            {["02:00", "02:30", "03:00", "03:30", "04:00", "04:30"].map((time, i) => (
-                                <button key={time} className={`flex flex-col items-center justify-center min-w-[70px] h-[70px] rounded-2xl shrink-0 transition-all ${i === 0 ? 'bg-primary text-black shadow-glow scale-105' : 'bg-surface-lighter border border-white/10 text-white/60'}`}>
-                                    <span className="text-sm font-bold">{time}</span>
-                                    {i === 0 && <span className="text-[10px] font-bold uppercase mt-0.5">Now</span>}
-                                </button>
-                            ))}
-                        </div>
+
                     </header>
 
                     {/* Main Content */}
@@ -279,7 +300,7 @@
                                         </div>
                                     )}
 
-                                    <section>
+                                    <section id={`slot-${m.timeSlot}`}>
                                         <div className="flex justify-between items-baseline mb-3 px-1">
                                             <h2 className={`text-xs font-bold uppercase tracking-widest ${isStarted ? 'text-primary' : 'text-white/60'}`}>{sectionTitle}</h2>
                                             <span className="text-xs text-white/40 font-mono">{m.timeSlot}</span>
@@ -292,7 +313,7 @@
                                                     <div className="flex flex-col">
                                                         <span className={`text-xs font-semibold mb-1 uppercase tracking-wider flex items-center gap-1.5 ${isStarted ? 'text-primary/80' : 'text-white/40'}`}>
                                                             <span className="material-symbols-outlined text-[16px]">meeting_room</span>
-                                                            {m.room}
+                                                            {currentFloor === "Unknown" ? m.room : `${m.room} • ${currentFloor}`}
                                                         </span>
                                                         <h3 className={`font-bold text-white leading-tight ${isStarted ? 'text-2xl' : 'text-xl'}`}>{m.investor}</h3>
                                                     </div>
