@@ -154,42 +154,44 @@
 
             if (view === "login") {
                 return (
-                    <div className="flex flex-col min-h-screen p-6 items-center justify-center">
-                        <div className="text-center mb-12">
-                            <div className="text-6xl mb-4">🦢</div>
-                            <h1 className="text-3xl font-bold tracking-tight">Welcome, Founder</h1>
-                            <p className="text-white/40 mt-2">Select your company to view schedule</p>
-                        </div>
-                        {loading && founders.length === 0 ? (
-                            <div className="flex items-center gap-2 text-primary/80">
-                                <span className="animate-spin material-symbols-outlined">sync</span>
-                                Loading...
+                    <div className="flex flex-col h-full w-full overflow-y-auto">
+                        <div className="m-auto w-full max-w-sm flex flex-col items-center p-6 py-12">
+                            <div className="text-center mb-12">
+                                <div className="text-6xl mb-4">🦢</div>
+                                <h1 className="text-3xl font-bold tracking-tight">Welcome, Founder</h1>
+                                <p className="text-white/40 mt-2">Select your company to view schedule</p>
                             </div>
-                        ) : founders.length === 0 ? (
-                            <div className="text-center flex flex-col items-center">
-                                <div className="text-4xl mb-4">⚠️</div>
-                                <h3 className="text-lg font-bold">Unable to load data</h3>
-                                <p className="text-white/40 text-sm mb-6 max-w-[200px]">Check your internet connection or try again.</p>
-                                <button onClick={() => { setLoading(true); fetchMeetings().finally(() => setLoading(false)); }}
-                                    className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all font-medium">
-                                    <span className="material-symbols-outlined">refresh</span>
-                                    Retry
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="w-full max-w-sm space-y-3">
-                                {founders.map(f => (
-                                    <button key={f} onClick={() => { setFounder(f); setView("schedule"); }}
-                                        className="w-full flex items-center gap-4 bg-surface-lighter hover:bg-white/10 border border-white/5 p-4 rounded-2xl transition-all active:scale-[0.98]">
-                                        <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center text-lg font-bold">
-                                            {f[0]}
-                                        </div>
-                                        <span className="text-lg font-semibold">{f}</span>
-                                        <span className="material-symbols-outlined ml-auto text-white/20">arrow_forward</span>
+                            {loading && founders.length === 0 ? (
+                                <div className="flex items-center gap-2 text-primary/80">
+                                    <span className="animate-spin material-symbols-outlined">sync</span>
+                                    Loading...
+                                </div>
+                            ) : founders.length === 0 ? (
+                                <div className="text-center flex flex-col items-center">
+                                    <div className="text-4xl mb-4">⚠️</div>
+                                    <h3 className="text-lg font-bold">Unable to load data</h3>
+                                    <p className="text-white/40 text-sm mb-6 max-w-[200px]">Check your internet connection or try again.</p>
+                                    <button onClick={() => { setLoading(true); fetchMeetings().finally(() => setLoading(false)); }}
+                                        className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all font-medium">
+                                        <span className="material-symbols-outlined">refresh</span>
+                                        Retry
                                     </button>
-                                ))}
-                            </div>
-                        )}
+                                </div>
+                            ) : (
+                                <div className="w-full max-w-sm space-y-3">
+                                    {founders.map(f => (
+                                        <button key={f} onClick={() => { setFounder(f); setView("schedule"); }}
+                                            className="w-full flex items-center gap-4 bg-surface-lighter hover:bg-white/10 border border-white/5 p-4 rounded-2xl transition-all active:scale-[0.98]">
+                                            <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center text-lg font-bold">
+                                                {f[0]}
+                                            </div>
+                                            <span className="text-lg font-semibold">{f}</span>
+                                            <span className="material-symbols-outlined ml-auto text-white/20">arrow_forward</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 );
             }
