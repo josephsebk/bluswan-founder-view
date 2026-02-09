@@ -9,7 +9,7 @@ You can deploy this folder (`founder-app`) to any static hosting service:
 - **S3 / GCS**: Upload the contents of this folder to your bucket.
 
 ## Files
-- `index.html`: The main entry point (renamed from `founder.html`).
+- `index.html`: The main entry point (Redesigned with Stitch UI + Tailwind).
 - `assets/`: Contains images and the mapping script.
 
 ## Updates
