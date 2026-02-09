@@ -14,3 +14,8 @@ You can deploy this folder (`founder-app`) to any static hosting service:
 
 ## Updates
 If you update investor images in the main app, remember to copy the new `assets/` folder here.
+
+## Control Tower
+Access the operations dashboard at: `/control-tower.html`
+- **Purpose**: Real-time view of all meeting slots.
+- **Features**: Filter by Founder/Investor, Auto-refresh every 30s.

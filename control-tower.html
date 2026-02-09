@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BluSwan — Control Tower</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦢</text></svg>">
+    <style>
+        /* Reset & Base */
+        html,
+        body,
+        #root {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            width: 100%;
+            background: #0b0c10;
+            font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #c5c6c7;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Layout */
+        .dashboard {
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: #66fcf1;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin: 0;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #1f2833;
+            padding: 15px 25px;
+            border-radius: 8px;
+            flex: 1;
+            border: 1px solid rgba(102, 252, 241, 0.1);
+        }
+
+        .stat-val {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #66fcf1;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            background: #1f2833;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            opacity: 0.6;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: rgba(102, 252, 241, 0.1);
+            border-color: #66fcf1;
+            color: #66fcf1;
+            opacity: 1;
+        }
+
+        /* Grid Table */
+        .grid-container {
+            overflow-x: auto;
+            background: #1f2833;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            background: #0b0c10;
+            color: #fff;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: top;
+            height: 80px;
+            width: 150px;
+        }
+
+        td:last-child {
+            border-right: none;
+        }
+
+        .entity-cell {
+            font-weight: 700;
+            color: #fff;
+            background: #151b24;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            border-right: 2px solid rgba(255, 255, 255, 0.1);
+            min-width: 180px;
+        }
+
+        /* Cell Status */
+        .slot-free {
+            background: rgba(102, 252, 241, 0.15);
+            color: #66fcf1;
+            border: 1px dashed rgba(102, 252, 241, 0.4);
+            border-radius: 6px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slot-free:hover {
+            background: #66fcf1;
+            color: #000;
+        }
+
+        .slot-occupied {
+            background: #0b0c10;
+            border-radius: 6px;
+            padding: 8px;
+            height: 100%;
+            font-size: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slot-occupied .meta {
+            color: #888;
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        .loader {
+            text-align: center;
+            padding: 100px;
+            font-size: 18px;
+            color: #66fcf1;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+
+    <script type="text/babel" data-type="module">
+        const { useState, useEffect, useMemo } = React;
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyB5b-raK5TB8jae94FinurfCCdMVMIiJquzkTTYnejocMLPj_GpnLl4Idor8-ccQ0Wsg/exec";
+
+        function App() {
+            const [meetings, setMeetings] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [view, setView] = useState('founders'); // founders | investors
+
+            const [lastUpdated, setLastUpdated] = useState(new Date());
+
+            const fetchData = () => {
+                fetch(`${APPS_SCRIPT_URL}?action=getMeetings`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.meetings) setMeetings(data.meetings);
+                        setLastUpdated(new Date());
+                        setLoading(false);
+                    })
+                    .catch(err => console.error(err));
+            };
+
+            // Initial Load & Polling
+            useEffect(() => {
+                fetchData();
+                const interval = setInterval(fetchData, 30000); // 30s refresh
+                return () => clearInterval(interval);
+            }, []);
+
+            // 1. Get Unique Time Slots (Sorted)
+            const timeSlots = useMemo(() => {
+                const slots = new Set(meetings.map(m => m.timeSlot).filter(Boolean));
+                // Simple sort logic: check AM/PM and hour. 
+                // For distinct "2:00 PM - 2:30 PM" strings, string sort works decent if format is consistent 
+                // ideally parse, but standard string sort is usually okay for single-day chunks
+                return Array.from(slots).sort((a, b) => {
+                    // Hacky sort for 12 vs 1 etc
+                    const getHour = (s) => parseInt(s.split(':')[0]);
+                    const getAmPm = (s) => s.includes('PM') ? 1 : 0;
+                    if (getAmPm(a) !== getAmPm(b)) return getAmPm(a) - getAmPm(b);
+                    // if both PM, 12 should come before 1, but 2 before 3. 
+                    // Let's rely on sheet order if possible, or simple alpha for now
+                    return a.localeCompare(b);
+                });
+            }, [meetings]);
+
+            // 2. Get Entities (Rows)
+            const entities = useMemo(() => {
+                const set = new Set();
+                meetings.forEach(m => {
+                    if (view === 'founders') {
+                        if (m.company) set.add(m.company);
+                    } else {
+                        if (m.investor) set.add(m.investor);
+                    }
+                });
+                return Array.from(set).sort();
+            }, [meetings, view]);
+
+            // 3. Build lookup map
+            // Map key: "EntityName|TimeSlot" -> Meeting Object
+            const lookup = useMemo(() => {
+                const map = {};
+                meetings.forEach(m => {
+                    const entity = view === 'founders' ? m.company : m.investor;
+                    if (entity && m.timeSlot) {
+                        map[`${entity}|${m.timeSlot}`] = m;
+                    }
+                });
+                return map;
+            }, [meetings, view]);
+
+            // Calculate Stats
+            const stats = useMemo(() => {
+                const total = entities.length * timeSlots.length;
+                const occupied = Object.keys(lookup).length;
+                const free = total - occupied;
+                return { total, occupied, free };
+            }, [entities, timeSlots, lookup]);
+
+            if (loading) return <div className="loader">INITIALIZING CONTROL TOWER...</div>;
+
+            return (
+                <div className="dashboard">
+                    <header>
+                        <h1>🦢 BluSwan Control Tower</h1>
+                        <div style={{ fontSize: 14, color: '#66fcf1', display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span className="pulse-dot" style={{ width: 8, height: 8, background: '#66fcf1', borderRadius: '50%', display: 'inline-block' }}></span>
+                            LIVE • {lastUpdated.toLocaleTimeString()}
+                        </div>
+                    </header>
+
+                    <div className="stats-bar">
+                        <div className="stat-card">
+                            <div className="stat-val">{stats.free}</div>
+                            <div className="stat-label">Open Slots</div>
+                        </div>
+                        <div className="stat-card">
+                            <div className="stat-val">{stats.occupied}</div>
+                            <div className="stat-label">Booked Meetings</div>
+                        </div>
+                        <div className="stat-card">
+                            <div className="stat-val">{entities.length}</div>
+                            <div className="stat-label">Active {view}</div>
+                        </div>
+                    </div>
+
+                    <div className="tabs">
+                        <div className={`tab ${view === 'founders' ? 'active' : ''}`} onClick={() => setView('founders')}>By Founder (Startup)</div>
+                        <div className={`tab ${view === 'investors' ? 'active' : ''}`} onClick={() => setView('investors')}>By Investor (Fund)</div>
+                    </div>
+
+                    <div className="grid-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th className="entity-cell" style={{ zIndex: 20 }}>Entity</th>
+                                    {timeSlots.map(slot => (
+                                        <th key={slot}>{slot.split('–')[0]}</th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {entities.map(entity => (
+                                    <tr key={entity}>
+                                        <td className="entity-cell">{entity}</td>
+                                        {timeSlots.map(slot => {
+                                            const meeting = lookup[`${entity}|${slot}`];
+                                            return (
+                                                <td key={slot}>
+                                                    {meeting ? (
+                                                        <div className="slot-occupied">
+                                                            <div style={{ fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                                                {view === 'founders' ? meeting.investor : meeting.company}
+                                                            </div>
+                                                            <div className="meta">{meeting.room}</div>
+                                                            {meeting.status === 'started' && <div style={{ color: '#66fcf1', fontSize: 10, marginTop: 4 }}>• LIVE</div>}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="slot-free">FREE</div>
+                                                    )}
+                                                </td>
+                                            );
+                                        })}
+                                    </tr>
+                                ))}
+                                {entities.length === 0 && (
+                                    <tr><td colSpan={timeSlots.length + 1} style={{ textAlign: "center", padding: 40, color: "#555" }}>No data found for {view}.</td></tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
