@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#050505">
+    <title>BluSwan — Founder View</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦢</text></svg>">
+    <style>
+        /* Reset & Base */
+        html,
+        body,
+        #root {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            width: 100%;
+            background: #050505;
+            font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Utilities */
+        .btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            width: 100%;
+            text-align: left;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-live {
+            background: linear-gradient(145deg, rgba(46, 204, 112, 0.08) 0%, rgba(46, 204, 112, 0.02) 100%);
+            border-color: rgba(46, 204, 112, 0.2);
+            box-shadow: 0 8px 32px rgba(46, 204, 112, 0.15);
+        }
+
+        .floor-banner {
+            background: #f59e0b;
+            color: #000;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 16px;
+            border-radius: 16px;
+            margin: 32px 0 20px;
+            text-align: center;
+            font-size: 15px;
+            letter-spacing: 0.05em;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+            border: 1px solid #fbbf24;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(0.98);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #2ecc70;
+            border-radius: 50%;
+            box-shadow: 0 0 0 rgba(46, 204, 112, 0.4);
+            animation: pulse-green 2s infinite;
+            display: inline-block;
+        }
+
+        @keyframes pulse-green {
+            0% {
+                box-shadow: 0 0 0 0 rgba(46, 204, 112, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 8px rgba(46, 204, 112, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(46, 204, 112, 0);
+            }
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3 {
+            margin: 0;
+        }
+
+        .text-sm {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+
+        .text-xs {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .investor-img {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            object-fit: cover;
+            background: #222;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .investor-placeholder {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .avatar-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* Back Button */
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .back-btn:active {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"
+        crossorigin></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js" crossorigin></script>
+    <script src="assets/investor_images.js"></script>
+
+    <script type="text/babel" data-type="module">
+        const { useState, useEffect, useMemo, useCallback } = React;
+
+        // Configuration
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyB5b-raK5TB8jae94FinurfCCdMVMIiJquzkTTYnejocMLPj_GpnLl4Idor8-ccQ0Wsg/exec";
+        const POLL_INTERVAL = 10000;
+
+        // Fallback if script fails
+        if (typeof INVESTOR_IMAGES === 'undefined') { var INVESTOR_IMAGES = {}; }
+
+        // Room Data (for floor info)
+        const ROOMS = [
+            { name: "GF-LAZE", floor: "Ground Floor" },
+            { name: "GF-Clout", floor: "Ground Floor" },
+            { name: "GF-Navigate", floor: "Ground Floor" },
+            { name: "GF-Library", floor: "Ground Floor" },
+            { name: "FF-Buzz", floor: "First Floor" },
+            { name: "FF-Ponder", floor: "First Floor" },
+            { name: "FF-Balance", floor: "First Floor" },
+            { name: "FF-Aspire", floor: "First Floor" },
+            { name: "FF-Curate", floor: "First Floor" },
+            { name: "FF-Introspect", floor: "First Floor" },
+            { name: "FF-Library", floor: "First Floor" },
+        ];
+
+        function getRoomFloor(roomName) {
+            if (!roomName) return "Unknown";
+            const r = ROOMS.find(r => r.name.toLowerCase() === roomName.toLowerCase());
+            // Heuristic fallback if not in list: GF- -> Ground, FF- -> First
+            if (!r) {
+                if (roomName.startsWith("GF")) return "Ground Floor";
+                if (roomName.startsWith("FF")) return "First Floor";
+                return "Unknown Floor";
+            }
+            return r.floor;
+        }
+
+        // Main App Component
+        function App() {
+            const [view, setView] = useState("login"); // login | schedule
+            const [founder, setFounder] = useState(null); // Selected Company Name
+            const [meetings, setMeetings] = useState([]);
+            const [loading, setLoading] = useState(false);
+            const [lastSync, setLastSync] = useState(null);
+
+            // Fetch Data
+            const fetchMeetings = useCallback(async () => {
+                try {
+                    const res = await fetch(`${APPS_SCRIPT_URL}?action=getMeetings`);
+                    const data = await res.json();
+                    if (data.meetings) {
+                        setMeetings(data.meetings);
+                        setLastSync(new Date());
+                    }
+                } catch (e) { console.error("Fetch error", e); }
+            }, []);
+
+            // Initial Load & Polling
+            useEffect(() => {
+                setLoading(true);
+                fetchMeetings().finally(() => setLoading(false));
+                const interval = setInterval(fetchMeetings, POLL_INTERVAL);
+                return () => clearInterval(interval);
+            }, [fetchMeetings]);
+
+            // Get unique founders for Login List
+            const founders = useMemo(() => {
+                // Collect all company names and founder names
+                const names = new Set();
+                meetings.forEach(m => {
+                    if (m.company) names.add(m.company);
+                    if (m.founder && m.founder !== m.company) names.add(m.founder);
+                });
+                return Array.from(names).filter(Boolean).sort();
+            }, [meetings]);
+
+            // Filter My Meetings
+            const myMeetings = useMemo(() => {
+                if (!founder) return [];
+                return meetings
+                    .filter(m => (m.company === founder || m.founder === founder))
+                    .sort((a, b) => a.id - b.id);
+            }, [meetings, founder]);
+
+            // View: Login
+            if (view === "login") {
+                return (
+                    <div style={{ padding: 24, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+                        <div style={{ textAlign: "center", marginBottom: 40, marginTop: 40 }}>
+                            <div style={{ fontSize: 64, marginBottom: 16 }}>🦢</div>
+                            <h1 style={{ fontSize: 28, fontWeight: 800 }}>Welcome, Founder</h1>
+                            <p className="text-sm" style={{ marginTop: 8 }}>Select your company to view schedule</p>
+                        </div>
+
+                        {loading && founders.length === 0 ? (
+                            <div style={{ textAlign: "center", color: "rgba(255,255,255,0.4)" }}>
+                                <div className="pulse-dot" style={{ width: 12, height: 12, marginBottom: 16 }}></div>
+                                <br />Loading schedule...
+                            </div>
+                        ) : (
+                            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                                {founders.map(f => (
+                                    <button key={f} className="btn" onClick={() => { setFounder(f); setView("schedule"); }}>
+                                        <div className="avatar-circle">{f[0]}</div>
+                                        <span style={{ fontSize: 17 }}>{f}</span>
+                                        <span style={{ marginLeft: "auto", opacity: 0.3 }}>→</span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+
+            // View: Schedule
+            return (
+                <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+                    {/* Header */}
+                    <div style={{ padding: "16px 20px", background: "rgba(10,10,10,0.85)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.08)", position: "sticky", top: 0, zIndex: 100 }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <button onClick={() => setView("login")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.6)", fontSize: 15, padding: "8px 0", cursor: "pointer", fontWeight: 500 }}>← Back</button>
+                            <div style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.06)", padding: "4px 10px", borderRadius: 20 }}>
+                                <div className="pulse-dot" style={{ width: 6, height: 6, opacity: lastSync ? 1 : 0.4 }}></div>
+                                <span className="text-xs" style={{ color: lastSync ? "#2ecc70" : "rgba(255,255,255,0.4)" }}>{lastSync ? "LIVE" : "SYNCING"}</span>
+                            </div>
+                        </div>
+                        <h2 style={{ fontSize: 24, fontWeight: 800, marginTop: 12, letterSpacing: "-0.02em" }}>{founder}</h2>
+                    </div>
+
+                    {/* Schedule List */}
+                    <div style={{ padding: 20, flex: 1, paddingBottom: 60 }}>
+                        {myMeetings.map((m, i) => {
+                            const currentFloor = getRoomFloor(m.room);
+
+                            // Determine previous floor to check for movement
+                            // If it's the first meeting, assume they are entering building (no move alert unless we want one)
+                            // But let's look at i-1 meeting
+                            let showMove = false;
+                            let prevFloor = null;
+
+                            if (i > 0) {
+                                const prevM = myMeetings[i - 1];
+                                prevFloor = getRoomFloor(prevM.room);
+                                if (currentFloor !== prevFloor && prevFloor !== "Unknown" && currentFloor !== "Unknown") {
+                                    showMove = true;
+                                }
+                            }
+
+                            const isStarted = m.status === "started";
+                            const repImage = INVESTOR_IMAGES[m.rep];
+
+                            return (
+                                <React.Fragment key={m.id}>
+                                    {showMove && (
+                                        <div className="floor-banner">
+                                            CHANGE FLOORS
+                                            <div style={{ fontSize: 13, opacity: 0.8, marginTop: 4, fontWeight: 600, textTransform: "none" }}>
+                                                Go from <u>{prevFloor}</u> to <u>{currentFloor}</u>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className={isStarted ? "card card-live" : "card"}>
+                                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16, alignItems: "center" }}>
+                                            <span className="text-sm" style={{ color: isStarted ? "#2ecc70" : "rgba(255,255,255,0.5)", fontWeight: 700, letterSpacing: "0.02em" }}>
+                                                {m.timeSlot}
+                                            </span>
+                                            {isStarted && (
+                                                <span style={{ fontSize: 11, background: "rgba(46, 204, 112, 0.2)", color: "#2ecc70", fontWeight: 800, padding: "4px 8px", borderRadius: 6 }}>
+                                                    IN PROGRESS
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
+                                            {repImage ? (
+                                                <img src={repImage} className="investor-img" />
+                                            ) : (
+                                                <div className="investor-placeholder">💼</div>
+                                            )}
+                                            <div>
+                                                <div style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.2, marginBottom: 4 }}>{m.investor}</div>
+                                            </div>
+                                        </div>
+
+                                        <div style={{ paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 10 }}>
+                                            <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: "50%", width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center" }}>📍</div>
+                                            <div>
+                                                <div style={{ fontSize: 15, fontWeight: 700 }}>{m.room}</div>
+                                                <div className="text-sm" style={{ fontSize: 12 }}>{currentFloor}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </React.Fragment>
+                            );
+                        })}
+
+                        {myMeetings.length === 0 && !loading && (
+                            <div style={{ textAlign: "center", color: "rgba(255,255,255,0.3)", marginTop: 60 }}>
+                                <div style={{ fontSize: 40, marginBottom: 10 }}>📭</div>
+                                No meetings found for {founder}.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
