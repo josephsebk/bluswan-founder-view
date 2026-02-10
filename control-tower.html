@@ -113,9 +113,18 @@
                             const fixedMeetings = data.meetings.map(m => ({
                                 ...m,
                                 timeSlot: m.timeSlot ? m.timeSlot
-                                    .replace("11:30 PM", "11:30 AM")
                                     .replace("10:00 PM", "10:00 AM")
-                                    .replace("10:45 PM", "10:45 AM") : m.timeSlot
+                                    .replace("10:35 PM", "10:35 AM")
+                                    .replace("10:45 PM", "10:45 AM")
+                                    .replace("11:20 PM", "11:20 AM")
+                                    .replace("11:30 PM", "11:30 AM")
+                                    .replace("13:00 PM", "1:00 PM")
+                                    .replace("13:35 PM", "1:35 PM")
+                                    .replace("13:40 PM", "1:40 PM")
+                                    .replace("13:45 PM", "1:45 PM")
+                                    .replace("14:20 PM", "2:20 PM")
+                                    .replace("14:30 PM", "2:30 PM")
+                                    .replace("14:50 PM", "2:50 PM") : m.timeSlot
                             }));
                             setMeetings(fixedMeetings);
                         }
